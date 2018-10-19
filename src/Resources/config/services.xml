@@ -15,6 +15,10 @@
             <argument type="service" id="alterphp.easyadmin_extension.helper.list_form_filters"/>
             <tag name="kernel.event_subscriber"/>
         </service>
+        <service id="alterphp.easyadmin_extension.subscriber.mongo_odm_post_query_builder" class="AlterPHP\EasyAdminExtensionBundle\EventListener\MongoOdmPostQueryBuilderSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="alterphp.easyadmin_extension.config_pass.exclude_fields" class="AlterPHP\EasyAdminExtensionBundle\Configuration\ExcludeFieldsConfigPass">
             <tag name="easyadmin.config_pass" priority="120"/>
         </service>
