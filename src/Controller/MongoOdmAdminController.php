@@ -12,11 +12,18 @@ class MongoOdmAdminController extends BaseAdminController
         $this->dispatch(EasyAdminMongoOdmEvents::PRE_LIST);
 
         $fields = $this->document['list']['fields'];
-        $paginator = $this->findAll($this->document['class'], $this->request->query->get('page', 1), $this->config['list']['max_results'], $this->request->query->get('sortField'), $this->request->query->get('sortDirection'));
+        $paginator = $this->mongoOdmFindAll(
+            $this->document['class'],
+            $this->request->query->get('page', 1),
+            $this->config['list']['max_results'] ?: 25,
+            $this->request->query->get('sortField'),
+            $this->request->query->get('sortDirection')
+        );
 
         $this->dispatch(EasyAdminMongoOdmEvents::POST_LIST, array('paginator' => $paginator));
 
         return $this->render('@EasyAdminExtension/default/embedded_list.html.twig', array(
+            'objectType' => 'document',
             'paginator' => $paginator,
             'fields' => $fields,
             'masterRequest' => $this->get('request_stack')->getMasterRequest(),

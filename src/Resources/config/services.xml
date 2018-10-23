@@ -33,6 +33,7 @@
             <argument>%easy_admin_extension.embedded_list.open_new_tab%</argument>
             <!-- Makes it process just after ViewConfigPass -->
             <tag name="easyadmin.config_pass" priority="29"/>
+            <tag name="easyadmin_mongo_odm.config_pass" priority="29"/>
         </service>
         <service id="alterphp.easyadmin_extension.helper.embedded_list" class="AlterPHP\EasyAdminExtensionBundle\Helper\EmbeddedListHelper">
             <argument type="service" id="doctrine"/>

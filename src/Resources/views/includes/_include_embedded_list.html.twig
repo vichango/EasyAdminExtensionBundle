@@ -1,4 +1,10 @@
-{% set action_params = { entity: entity, action: 'embeddedList', filters: filters } %}
+{% set action_params = { action: 'embeddedList', filters: filters } %}
+{% if document is defined %}
+  {% set action_params = action_params|merge({document: document}) %}
+{% else %}
+  {% set action_params = action_params|merge({entity: entity}) %}
+{% endif %}
+
 {% if sort is not null %}
   {% set action_params = action_params|merge({ sortField: sort.field, sortDirection: sort.direction}) %}
 {% endif %}

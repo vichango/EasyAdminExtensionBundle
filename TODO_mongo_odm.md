@@ -7,6 +7,8 @@
     - ExcludeFieldsConfigPass
     - ListFormFiltersConfigPass OK
     - ShortFormTypeConfigPass: OK
-    - ShowViewConfigPass
+    - ShowViewConfigPass: OK
+
+# embeddedlist id => md5
 
 # Tests !
