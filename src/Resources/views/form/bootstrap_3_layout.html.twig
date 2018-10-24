@@ -7,14 +7,11 @@
   %}
   {% set filters = default_filters|merge(filters) %}
   {% set tpl_params = {
+    object_type: object_type,
+    object: 'document' == object_type ? document : entity,
     filters: filters,
     sort: sort|default(null)
   } %}
-  {% if 'document' == object_type %}
-    {% set tpl_params = tpl_params|merge({document: document}) %}
-  {% else %}
-    {% set tpl_params = tpl_params|merge({entity: entity}) %}
-  {% endif %}
   {% include '@EasyAdmin/includes/_include_embedded_list.html.twig' with tpl_params only %}
 {% endblock %}
 

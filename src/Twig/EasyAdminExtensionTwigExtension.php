@@ -26,10 +26,11 @@ class EasyAdminExtensionTwigExtension extends AbstractExtension
     public function getFunctions()
     {
         return array(
-            new TwigFunction('easyadmin_base_twig_path', array($this, 'getBaseTwigPath')),
             new TwigFunction('easyadmin_object', array($this, 'getObjectConfiguration')),
             new TwigFunction('easyadmin_object_type', array($this, 'getObjectType')),
             new TwigFunction('easyadmin_path', array($this, 'getEasyAdminPath')),
+            new TwigFunction('easyadmin_object_twig_path', array($this, 'getTwigPath')),
+            new TwigFunction('easyadmin_object_base_twig_path', array($this, 'getBaseTwigPath')),
             new TwigFunction('easyadmin_object_render_field_for_*_view', array($this, 'renderObjectField'), array('is_safe' => array('html'), 'needs_environment' => true)),
         );
     }
@@ -44,6 +45,28 @@ class EasyAdminExtensionTwigExtension extends AbstractExtension
         }
 
         return call_user_func($function->getCallable(), $twig, $view, $objectName, $item, $fieldMetadata);
+    }
+
+    /**
+     * Returns the namespaced Twig path.
+     *
+     * @param Request $request
+     * @param string  $path
+     *
+     * @return string
+     */
+    public function getTwigPath(Request $request, string $path)
+    {
+        $requestRoute = $request->attributes->get('_route');
+
+        if ('easyadmin' === $requestRoute && $request->query->has('entity')) {
+            return sprintf('@EasyAdmin/%s', $path);
+        } elseif ('easyadmin_mongo_odm' === $requestRoute && $request->query->has('document')) {
+            return sprintf('@EasyAdminMongoOdm/%s', $path);
+        }
+
+        // Fallback not entity/document admin pages based on EasyAdmin layout ?
+        return sprintf('@EasyAdmin/%s', $path);
     }
 
     /**

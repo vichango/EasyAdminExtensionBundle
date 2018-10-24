@@ -120,11 +120,7 @@
   <script type="text/javascript">
     reloadEmbeddedList(
       '{{ widget_identifier }}',
-      {% if 'document' == objectType %}
-        '{{ easyadmin_path({ action: 'edit', document: _object_config.name, view: 'list' })|raw }}'
-      {% else %}
-        '{{ easyadmin_path({ action: 'edit', entity: _object_config.name, view: 'list' })|raw }}'
-      {% endif %}
+      '{{ easyadmin_path({ action: 'edit', (objectType): _object_config.name, view: 'list' })|raw }}'
     );
   </script>
 </div>
