@@ -31,8 +31,21 @@ class EasyAdminExtensionTwigExtension extends AbstractExtension
             new TwigFunction('easyadmin_path', array($this, 'getEasyAdminPath')),
             new TwigFunction('easyadmin_object_twig_path', array($this, 'getTwigPath')),
             new TwigFunction('easyadmin_object_base_twig_path', array($this, 'getBaseTwigPath')),
+            new TwigFunction('easyadmin_object_get_actions_for_*_item', array($this, 'getActionsForItem'), array('needs_environment' => true)),
             new TwigFunction('easyadmin_object_render_field_for_*_view', array($this, 'renderObjectField'), array('is_safe' => array('html'), 'needs_environment' => true)),
         );
+    }
+
+    public function getActionsForItem(
+        \Twig_Environment $twig, string $view, string $objectType, string $objectName
+    ) {
+        if ('document' === $objectType && $twig->getFunction('easyadmin_mongo_odm_get_actions_for_*_item')) {
+            $function = $twig->getFunction('easyadmin_mongo_odm_get_actions_for_*_item');
+        } else {
+            $function = $twig->getFunction('easyadmin_get_actions_for_*_item');
+        }
+
+        return call_user_func($function->getCallable(), $view, $objectName);
     }
 
     public function renderObjectField(

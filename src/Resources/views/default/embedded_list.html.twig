@@ -21,7 +21,7 @@
 
 {% block main %}
 <div class="embedded-list" for="{{ widget_identifier }}">
-  {% set _list_item_actions = easyadmin_get_actions_for_list_item(_object_config.name) %}
+  {% set _list_item_actions = easyadmin_object_get_actions_for_list_item(objectType, _object_config.name) %}
   {# Prune forbidden actions AND delete action anyway (not handled with #delete-modal) #}
   {% set _list_item_actions = _list_item_actions|prune_item_actions(_object_config, ['delete']) %}
   {% set _columns_count = fields|length + (_list_item_actions|length > 0 ? 1 : 0) %}
