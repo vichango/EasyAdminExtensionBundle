@@ -42,8 +42,8 @@ class EmbeddedListExtension extends AbstractExtension
         return \md5($requestUri);
     }
 
-    public function guessDefaultFilters(string $objectFqcn, string $parentDocumentProperty, $parentDocument)
+    public function guessDefaultFilters(string $objectFqcn, string $parentObjectProperty, $parentObject)
     {
-        return $this->embeddedListHelper->guessDefaultFilter($objectFqcn, $parentDocumentProperty, $parentDocument);
+        return $this->embeddedListHelper->guessDefaultFilter($objectFqcn, $parentObjectProperty, $parentObject);
     }
 }
