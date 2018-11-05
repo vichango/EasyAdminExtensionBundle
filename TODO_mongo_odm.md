@@ -9,6 +9,4 @@
     - ShortFormTypeConfigPass: OK
     - ShowViewConfigPass: OK
 
-# embeddedlist id => md5
-
 # Tests !

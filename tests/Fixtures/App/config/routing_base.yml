@@ -1,4 +1,7 @@
 easy_admin_bundle:
-    resource: "@EasyAdminExtensionBundle/Controller/AdminController.php"
+    # Sf 3.3 : resource: "@EasyAdminExtensionBundle/Controller/AdminController"
+    # Sf 3.4+ : resource: "@EasyAdminExtensionBundle/Controller/AdminController.php"
+    # Compat: not specifying the file but the class
+    resource: "AlterPHP\\EasyAdminExtensionBundle\\Controller\\AdminController"
     type:     annotation
     prefix:   /admin/
