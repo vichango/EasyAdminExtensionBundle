@@ -34,7 +34,7 @@ class RequestLog
 
     public static function create(
         string $clientIp,
-        ?\DateTimeInterface $localDatetime
+        \DateTimeInterface $localDatetime = null
     ) {
         $requestLog = new static();
 
