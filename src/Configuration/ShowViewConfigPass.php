@@ -49,21 +49,25 @@ class ShowViewConfigPass implements ConfigPassInterface
      */
     private function processCustomShowTypes(array $backendConfig)
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            foreach ($entityConfig['show']['fields'] as $fieldName => $fieldMetadata) {
-                if (\array_key_exists($fieldMetadata['type'], static::$mapTypeToTemplates)) {
-                    $template = $this->isFieldTemplateDefined($fieldMetadata)
-                                    ? $fieldMetadata['template']
-                                    : static::$mapTypeToTemplates[$fieldMetadata['type']];
-                    $entityConfig['show']['fields'][$fieldName]['template'] = $template;
+        foreach (array('entities', 'documents') as $objectTypeRootKey) {
+            if (isset($backendConfig[$objectTypeRootKey]) && \is_array($backendConfig[$objectTypeRootKey])) {
+                foreach ($backendConfig[$objectTypeRootKey] as $objectName => $objectConfig) {
+                    foreach ($objectConfig['show']['fields'] as $fieldName => $fieldMetadata) {
+                        if (\array_key_exists($fieldMetadata['type'], static::$mapTypeToTemplates)) {
+                            $template = $this->isFieldTemplateDefined($fieldMetadata)
+                                            ? $fieldMetadata['template']
+                                            : static::$mapTypeToTemplates[$fieldMetadata['type']];
+                            $objectConfig['show']['fields'][$fieldName]['template'] = $template;
 
-                    $entityConfig['show']['fields'][$fieldName]['template_options'] = $this->processTemplateOptions(
-                        $fieldMetadata['type'], $fieldMetadata
-                    );
+                            $objectConfig['show']['fields'][$fieldName]['template_options'] = $this->processTemplateOptions(
+                                $fieldMetadata['type'], $fieldMetadata
+                            );
+                        }
+                    }
+
+                    $backendConfig[$objectTypeRootKey][$objectName] = $objectConfig;
                 }
             }
-
-            $backendConfig['entities'][$entityName] = $entityConfig;
         }
 
         return $backendConfig;
