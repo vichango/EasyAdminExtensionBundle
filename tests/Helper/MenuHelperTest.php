@@ -97,6 +97,93 @@ class MenuHelperTest extends TestCase
         $this->assertSame($expectedPrunedMenu, $prunedMenu);
     }
 
+    public function testAcessDeniedDocumentEntriesArePruned()
+    {
+        $menuConfig = array(
+            0 => array('label' => 'Dashboard', 'type' => 'route', 'children' => array()),
+            1 => array('label' => 'Organizations', 'type' => 'document', 'document' => 'Organization'),
+            2 => array('label' => 'Members', 'type' => 'document', 'document' => 'Member'),
+            3 => array('label' => 'Events', 'type' => 'empty', 'children' => array(
+                0 => array('label' => 'Seminaries', 'type' => 'document', 'document' => 'Seminary'),
+                1 => array('label' => 'Meetings', 'type' => 'document', 'document' => 'Meeting'),
+                2 => array('label' => 'Plenary meetings', 'type' => 'document', 'document' => 'PlenaryMeeting'),
+            )),
+            4 => array('label' => 'System', 'type' => 'empty', 'children' => array(
+                0 => array('label' => 'Admin users', 'type' => 'document', 'document' => 'AdminUser'),
+                1 => array('label' => 'Admin groups', 'type' => 'document', 'document' => 'AdminGroup'),
+            )),
+        );
+
+        $documentsConfig = array(
+            'Organization' => array('role_prefix' => 'ROLE_ORGANIZATION'),
+            'Member' => array('role_prefix' => 'ROLE_MEMBER'),
+            'Seminary' => array('role_prefix' => 'ROLE_SEMINARY'),
+            'Meeting' => array('role_prefix' => 'ROLE_MEETING'),
+            'PlenaryMeeting' => array('role_prefix' => 'ROLE_PLENARYMEETING'),
+            'AdminUser' => array('role_prefix' => 'ROLE_ADMINUSER'),
+            'AdminGroup' => array('role_prefix' => 'ROLE_ADMINGROUP'),
+        );
+
+        $adminAuthorizationChecker = $this->createMock(AdminAuthorizationChecker::class);
+        $symfonyAuthorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
+
+        $grantedRoleMap = array(
+            array($documentsConfig['Organization'], 'list', null, true),
+            array($documentsConfig['Member'], 'list', null, false),
+            array($documentsConfig['Seminary'], 'list', null, true),
+            array($documentsConfig['Meeting'], 'list', null, false),
+            array($documentsConfig['PlenaryMeeting'], 'list', null, true),
+            array($documentsConfig['AdminUser'], 'list', null, false),
+            array($documentsConfig['AdminGroup'], 'list', null, false),
+        );
+        $adminAuthorizationChecker->method('isEasyAdminGranted')->will($this->returnValueMap($grantedRoleMap));
+
+        $helper = new MenuHelper($adminAuthorizationChecker, $symfonyAuthorizationChecker);
+
+        $prunedMenu = $helper->pruneMenuItems($menuConfig, $documentsConfig);
+
+        $expectedPrunedMenu = array(
+            0 => array(
+                'label' => 'Dashboard',
+                'type' => 'route',
+                'children' => array(),
+                'menu_index' => 0,
+                'submenu_index' => -1,
+            ),
+            1 => array(
+                'label' => 'Organizations',
+                'type' => 'document',
+                'document' => 'Organization',
+                'menu_index' => 1,
+                'submenu_index' => -1,
+            ),
+            2 => array(
+                'label' => 'Events',
+                'type' => 'empty',
+                'children' => array(
+                    0 => array(
+                        'label' => 'Seminaries',
+                        'type' => 'document',
+                        'document' => 'Seminary',
+                        'menu_index' => 2,
+                        'submenu_index' => 0,
+                    ),
+                    1 => array(
+                        'label' => 'Plenary meetings',
+                        'type' => 'document',
+                        'document' => 'PlenaryMeeting',
+                        'menu_index' => 2,
+                        'submenu_index' => 1,
+                    ),
+                ),
+                'menu_index' => 2,
+                'submenu_index' => -1,
+            ),
+        );
+
+        $this->assertSame($expectedPrunedMenu, $prunedMenu);
+    }
+
     public function testAcessDeniedStaticEntriesArePruned()
     {
         $menuConfig = array(

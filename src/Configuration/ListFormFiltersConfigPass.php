@@ -48,7 +48,7 @@ class ListFormFiltersConfigPass implements ConfigPassInterface
 
             $formFilters = array();
 
-            foreach ($objectConfig['list']['form_filters'] as $i => $formFilter) {
+            foreach ($objectConfig['list']['form_filters'] as $key => $formFilter) {
                 // Detects invalid config node
                 if (!\is_string($formFilter) && !is_array($formFilter)) {
                     throw new \RuntimeException(
@@ -65,13 +65,17 @@ class ListFormFiltersConfigPass implements ConfigPassInterface
                     $filterConfig = array('property' => $formFilter);
                 } else {
                     if (!\array_key_exists('property', $formFilter)) {
-                        throw new \RuntimeException(
-                            \sprintf(
-                                'One of the values of the "form_filters" option for the "list" view of the "%s" object of type "%s" does not define the mandatory option "property".',
-                                $objectConfig['class'],
-                                $objectType
-                            )
-                        );
+                        if (\is_string($key)) {
+                            $formFilter['property'] = $key;
+                        } else {
+                            throw new \RuntimeException(
+                                \sprintf(
+                                    'One of the values of the "form_filters" option for the "list" view of the "%s" object of type "%s" does not define the mandatory option "property".',
+                                    $objectConfig['class'],
+                                    $objectType
+                                )
+                            );
+                        }
                     }
 
                     $filterConfig = $formFilter;

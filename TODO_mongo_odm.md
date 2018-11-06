@@ -7,6 +7,6 @@
     - ExcludeFieldsConfigPass
     - ListFormFiltersConfigPass OK
     - ShortFormTypeConfigPass: OK
-    - ShowViewConfigPass: OK
+    - ShowViewConfigPass: ?
 
 # Tests !
