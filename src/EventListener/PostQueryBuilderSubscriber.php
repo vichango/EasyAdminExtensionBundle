@@ -6,13 +6,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\QueryException;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * Apply filters on list/search queryBuilder.
  */
-class PostQueryBuilderSubscriber implements EventSubscriberInterface
+class PostQueryBuilderSubscriber extends AbstractPostQueryBuilderSubscriber
 {
     /**
      * @var \AlterPHP\EasyAdminExtensionBundle\Helper\ListFormFiltersHelper
