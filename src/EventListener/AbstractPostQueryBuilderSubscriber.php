@@ -16,9 +16,20 @@ abstract class AbstractPostQueryBuilderSubscriber implements EventSubscriberInte
     {
         $queryBuilder = $event->getArgument('query_builder');
 
+        // Request filters
         if ($event->hasArgument('request')) {
             $this->applyRequestFilters($queryBuilder, $event->getArgument('request')->get('filters', array()));
-            $this->applyFormFilters($queryBuilder, $event->getArgument('request')->get('form_filters', array()));
+        }
+
+        // List form filters
+        if ($event->hasArgument('entity')) {
+            $entityConfig = $event->getArgument('entity');
+            if (isset($entityConfig['list']['form_filters'])) {
+                $listFormFiltersForm = $this->listFormFiltersHelper->getListFormFilters($entityConfig['list']['form_filters']);
+                if ($listFormFiltersForm->isSubmitted() && $listFormFiltersForm->isValid()) {
+                    $this->applyFormFilters($queryBuilder, $listFormFiltersForm->getData());
+                }
+            }
         }
     }
 
