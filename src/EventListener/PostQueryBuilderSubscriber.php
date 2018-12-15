@@ -201,8 +201,6 @@ class PostQueryBuilderSubscriber implements EventSubscriberInterface
             // Generating SQL throws a QueryException if using wrong field/association
             $qbClone->getQuery()->getSQL();
         } catch (QueryException $e) {
-            dump($qbClone);
-
             return false;
         }
 
