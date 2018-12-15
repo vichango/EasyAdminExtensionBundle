@@ -148,8 +148,9 @@ class ListFormFiltersConfigPass implements ConfigPassInterface
 
     private function configureAssociationFilter(string $entityClass, array $associationMapping, array &$filterConfig)
     {
-        // To-One (EasyAdminAutocompleteType)
-        if ($associationMapping['type'] & ClassMetadataInfo::TO_ONE) {
+        // To-One or To-Many (EasyAdminAutocompleteType)
+        // TODO Can the test for To-One or To-Many be removed?
+        if ($associationMapping['type'] & (ClassMetadataInfo::TO_ONE || ClassMetadataInfo::TO_MANY)) {
             $filterConfig['type'] = EasyAdminAutocompleteType::class;
             $filterConfig['type_options'] = \array_merge(
                 array(

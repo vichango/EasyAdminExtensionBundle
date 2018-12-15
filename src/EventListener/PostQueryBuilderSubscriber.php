@@ -95,14 +95,16 @@ class PostQueryBuilderSubscriber implements EventSubscriberInterface
             }
             // Add root entity alias if none provided
             $field = false === \strpos($field, '.') ? $queryBuilder->getRootAlias().'.'.$field : $field;
-            // Checks if filter is directly appliable on queryBuilder
-            if (!$this->isFilterAppliable($queryBuilder, $field)) {
-                continue;
-            }
             // Sanitize parameter name
             $parameter = 'form_filter_'.\str_replace('.', '_', $field);
-
-            $this->filterQueryBuilder($queryBuilder, $field, $parameter, $value);
+            // Checks if filter is directly appliable on queryBuilder
+            if ($this->isFilterAppliable($queryBuilder, $field)) {
+                $this->filterQueryBuilder($queryBuilder, $field, $parameter, $value);
+            } elseif ($this->isFilterAppliableToMany($queryBuilder, $field)) {
+                $this->filterQueryBuilderToMany($queryBuilder, $field, $parameter, $value);
+            } else {
+                continue;
+            }
         }
     }
 
@@ -144,6 +146,27 @@ class PostQueryBuilderSubscriber implements EventSubscriberInterface
         }
     }
 
+    protected function filterQueryBuilderToMany(QueryBuilder $queryBuilder, string $field, string $parameter, $value)
+    {
+        $filterDqlPart = [];
+        $filterDqlParam = [];
+
+        // For multiple value, use an IN clause, equality otherwise
+        if (\is_array($value)) {
+            foreach ($value as $index => $value) {
+                $tag = $parameter.'_eaeb_'.$index;
+                $filterDqlPart[] = ':'.$tag.' MEMBER OF '.$field;
+                $filterDqlParam[$tag] = $value;
+            }
+        }
+
+        $queryBuilder->andWhere(join(' OR ', $filterDqlPart));
+
+        foreach ($filterDqlParam as $tag => $value) {
+            $queryBuilder->setParameter($tag, $value);
+        }
+    }
+
     /**
      * Checks if filter is directly appliable on queryBuilder.
      *
@@ -162,6 +185,24 @@ class PostQueryBuilderSubscriber implements EventSubscriberInterface
             // Generating SQL throws a QueryException if using wrong field/association
             $qbClone->getQuery()->getSQL();
         } catch (QueryException $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function isFilterAppliableToMany(QueryBuilder $queryBuilder, string $field): bool
+    {
+        $qbClone = clone $queryBuilder;
+
+        try {
+            $qbClone->andWhere($field.' IS EMPTY');
+
+            // Generating SQL throws a QueryException if using wrong field/association
+            $qbClone->getQuery()->getSQL();
+        } catch (QueryException $e) {
+            dump($qbClone);
+
             return false;
         }
 
