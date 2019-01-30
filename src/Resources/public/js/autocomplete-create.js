@@ -44,6 +44,52 @@ function createAutoCompleteCreateFields() {
   });
 }
 
+function createEntityCreateModalFormAutoCompleteFields() {
+  var autocompleteCreateFields = $('#create-entity-modal').find('[data-easyadmin-autocomplete-url]');
+
+  autocompleteCreateFields.each(function () {
+    var $this = $(this),
+      url = $this.data('easyadmin-autocomplete-url'),
+      url_action = $this.data('easyadmin-autocomplete-create-action-url'),
+      field_name = $this.data('easyadmin-autocomplete-create-field-name'),
+      button_text = $this.data('easyadmin-autocomplete-create-button-text'),
+      select_id = $this.attr('id');
+
+    $this.select2({
+      theme: 'bootstrap',
+      ajax: {
+        url: url,
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+          return { 'query': params.term, 'page': params.page };
+        },
+        // to indicate that infinite scrolling can be used
+        processResults: function (data, params) {
+          return {
+            results: data.results,
+            pagination: {
+              more: data.has_next_page
+            }
+          };
+        },
+        cache: true
+      },
+      placeholder: '',
+      allowClear: true,
+      minimumInputLength: 1,
+      language: {
+        noResults: function () {
+          return '<a href="#" class="btn btn-info" onclick="switchToEntityCreation(\''+url_action+'\', \''+select_id+'\', \''+field_name+'\');return false;">'+button_text+'</a>';
+        }
+      },
+      escapeMarkup: function (markup) {
+        return markup;
+      }
+    });
+  });
+}
+
 function switchToEntityCreation(url_action, select_id, field_name) {
   $('#'+select_id).select2('close');
   $.ajax({
@@ -52,6 +98,9 @@ function switchToEntityCreation(url_action, select_id, field_name) {
     success: function(data) {
       openCreateEntityModal(data, url_action, field_name, select_id);
       $('#create-entity-modal').modal({ backdrop: true, keyboard: true });
+
+      // Initialize autocomplet fields.
+      createEntityCreateModalFormAutoCompleteFields(autocompleteCreateFields);
     }
   });
 }
