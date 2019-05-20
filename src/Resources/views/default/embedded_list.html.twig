@@ -5,6 +5,9 @@
 {# OVERRIDE referer #}
 {% set _request_parameters = app.request.query.all %}
 {% set _request_parameters = _request_parameters|merge({ referer: masterRequest.requestUri|url_encode }) %}
+{# HACK Start #}
+{% set _request_parameters = _request_parameters|merge({ filters: [], referer: [] }) %}
+{# HACK End #}
 
 {% set widget_identifier = app.request.requestUri %}
 

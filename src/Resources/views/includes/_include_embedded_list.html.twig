@@ -1,7 +1,9 @@
+{# HACK Start #}
 {# Provide a non-existent ID in case the list is empty so that it is not ignored. #}
 {% if { 'entity.id': [] } == filters %}
   {% set filters = { 'entity.id': [-1] } %}
 {% endif %}
+{# HACK End #}
 
 {% set action_params = { entity: entity, action: 'embeddedList', filters: filters } %}
 {% if sort is not null %}
