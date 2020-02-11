@@ -1,5 +1,4 @@
-{# HACK Start #}
-{# Provide a non-existent ID in case the list is empty so that it is not ignored. #}
+{# HACK Start - Provide a non-existent ID in case the list is empty so that it is not ignored. #}
 {% if { 'entity.id': [] } == filters %}
   {% set filters = { 'entity.id': [-1] } %}
 {% endif %}

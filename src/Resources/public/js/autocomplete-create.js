@@ -34,7 +34,10 @@ function createAutoCompleteCreateFields() {
       minimumInputLength: 1,
       language: {
         noResults: function () {
+          // HACK Start - Remove field_name.
+          // return '<a href="#" class="btn btn-info" onclick="switchToEntityCreation(\''+url_action+'\', \''+select_id+'\', \''+field_name+'\');return false;">'+button_text+' '+field_name+'</a>';
           return '<a href="#" class="btn btn-info" onclick="switchToEntityCreation(\''+url_action+'\', \''+select_id+'\', \''+field_name+'\');return false;">'+button_text+'</a>';
+          // HACK End
         }
       },
       escapeMarkup: function (markup) {
@@ -44,6 +47,7 @@ function createAutoCompleteCreateFields() {
   });
 }
 
+// HACK Start - New method for initializing autocomplet fields.
 function createEntityCreateModalFormAutoCompleteFields() {
   var autocompleteCreateFields = $('#create-entity-modal').find('[data-easyadmin-autocomplete-url]');
 
@@ -89,6 +93,7 @@ function createEntityCreateModalFormAutoCompleteFields() {
     });
   });
 }
+// HACK End
 
 function switchToEntityCreation(url_action, select_id, field_name) {
   $('#'+select_id).select2('close');
@@ -99,8 +104,9 @@ function switchToEntityCreation(url_action, select_id, field_name) {
       openCreateEntityModal(data, url_action, field_name, select_id);
       $('#create-entity-modal').modal({ backdrop: true, keyboard: true });
 
-      // Initialize autocomplet fields.
+      // HACK Start - Initialize autocomplet fields.
       createEntityCreateModalFormAutoCompleteFields(autocompleteCreateFields);
+      // HACK End
     }
   });
 }

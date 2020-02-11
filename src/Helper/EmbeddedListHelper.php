@@ -138,9 +138,7 @@ class EmbeddedListHelper
                     return ['entity.id' => $itemIds->toArray()];
                 }
             }
-            // HACK Start
-            // If the target entity is the owning side of the association and the mappedBy attribute
-            // is known for the target entity.
+            // HACK Start - If the target entity is the owning side of the association and the mappedBy attribute is known for the target entity.
             elseif ($parentEntityFqcn === $assoc['targetEntity'] && $parentEntityProperty === $assoc['mappedBy']) {
                 $relatedItems = PropertyAccess::createPropertyAccessor()->getValue(
                     $parentEntity, $parentEntityProperty
