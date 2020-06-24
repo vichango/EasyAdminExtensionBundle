@@ -105,7 +105,7 @@ function switchToEntityCreation(url_action, select_id, field_name) {
       $('#create-entity-modal').modal({ backdrop: true, keyboard: true });
 
       // HACK Start - Initialize autocomplet fields.
-      createEntityCreateModalFormAutoCompleteFields(autocompleteCreateFields);
+      createEntityCreateModalFormAutoCompleteFields();
       // HACK End
     }
   });
