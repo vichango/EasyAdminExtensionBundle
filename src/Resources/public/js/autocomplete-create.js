@@ -83,9 +83,10 @@ function createEntityCreateModalFormAutoCompleteFields() {
       allowClear: true,
       minimumInputLength: 1,
       language: {
-        noResults: function () {
-          return '<a href="#" class="btn btn-info" onclick="switchToEntityCreation(\''+url_action+'\', \''+select_id+'\', \''+field_name+'\');return false;">'+button_text+'</a>';
-        }
+        // HACK Don't offer entity creation when in modal.
+        // noResults: function () {
+        //   return '<a href="#" class="btn btn-info" onclick="switchToEntityCreation(\''+url_action+'\', \''+select_id+'\', \''+field_name+'\');return false;">'+button_text+'</a>';
+        // }
       },
       escapeMarkup: function (markup) {
         return markup;
